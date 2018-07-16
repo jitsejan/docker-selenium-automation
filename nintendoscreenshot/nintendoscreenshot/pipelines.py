@@ -6,7 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import smtplib
-import os.path as op
+import os.path
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -36,10 +36,19 @@ class NintendoscreenshotPipeline(object):
         msg['Subject'] = self.settings['MAIL_SUBJECT']
 
         msg.attach(MIMEText(str(self.items)))
-
+        
+        part = MIMEBase('application', "octet-stream")
+        with open('results.json', 'rb') as file:
+            part.set_payload(file.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition',
+                        'attachment; filename="{}"'.format(os.path.basename('results.json')))
+        msg.attach(part)
 
         self.smtp.sendmail(
             from_addr=self.settings['MAIL_FROM'],
             to_addrs=self.settings['MAIL_TO'],
             msg=msg.as_string(),
         )
+
+        self.smtp.quit()

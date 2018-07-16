@@ -96,7 +96,9 @@ MAIL_SUBJECT = "Scrapy results Nintendo Main"
 MAIL_TO = ["jitsejan@gmail.com"]
 MAIL_HOST = "smtp.gmail.com"
 MAIL_PORT = 587
-MAIL_USER = "jitsejan@gmail.com"
+MAIL_USER = os.environ.get('MAIL_USER')
 MAIL_PASS = os.environ.get('MAIL_PASS')
 MAIL_TSL = True
 MAIL_SSL = False
+
+FEED_URI = 'results.json'
