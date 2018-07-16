@@ -12,14 +12,11 @@ class NintendomainSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(NintendomainSpider, self).__init__(*args, **kwargs)
-        self.driver = webdriver.Remote("http://localhost:4444/wd/hub", DesiredCapabilities.CHROME)
+        self.driver = webdriver.Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX)
         self.driver.get(BASE_URL)
         self.driver.get_screenshot_as_file('screenshot.png')
 
     def parse(self, response):
-        driver = webdriver.Remote("http://localhost:4444/wd/hub", DesiredCapabilities.CHROME)
-        driver.get('http://prod.jitsejan.com:8080')
-        driver.save_screenshot('vue_frontpage.png')
         for elem in response.css('section.new-releases li a'):
             yield {
                'name': elem.css('div[itemprop="name"]::text').extract_first(),
