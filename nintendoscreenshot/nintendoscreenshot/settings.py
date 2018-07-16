@@ -9,6 +9,8 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
+
 BOT_NAME = 'nintendoscreenshot'
 
 SPIDER_MODULES = ['nintendoscreenshot.spiders']
@@ -64,9 +66,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'nintendoscreenshot.pipelines.NintendoscreenshotPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'nintendoscreenshot.pipelines.NintendoscreenshotPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -88,3 +90,13 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+MAIL_FROM = "scrapy@jitsejan.com"
+MAIL_SUBJECT = "Scrapy results Nintendo Main"
+MAIL_TO = ["jitsejan@gmail.com"]
+MAIL_HOST = "smtp.gmail.com"
+MAIL_PORT = 587
+MAIL_USER = "jitsejan@gmail.com"
+MAIL_PASS = os.environ.get('MAIL_PASS')
+MAIL_TSL = True
+MAIL_SSL = False
