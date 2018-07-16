@@ -106,3 +106,52 @@ We need to parse the following HTML:
     </ul>
 </section>
 ```
+
+To get the image, link, release date and the name of the game, we add the following code to the spider:
+
+```python
+# -*- coding: utf-8 -*-
+import scrapy
+
+BASE_URL = 'http://www.nintendo.com/'
+
+class NintendomainSpider(scrapy.Spider):
+    name = 'nintendomain'
+    allowed_domains = ['www.nintendo.com']
+    start_urls = [BASE_URL]
+
+    def parse(self, response):
+        for elem in response.css('section.new-releases li a'):
+            yield {
+               'name': elem.css('div[itemprop="name"]::text').extract_first(),
+               'releasedate': elem.css('.date::text').extract_first().strip(),
+               'link': BASE_URL + elem.xpath('@href').extract_first(),
+               'image': elem.css('img::attr(src)').extract_first()
+            }
+```
+
+```bash
+j.waterschoot at MI-Mac011 in ~/code/docker-selenium-automation/nintendoscreenshot on spider [!]
+$ scrapy crawl nintendomain
+...
+2018-07-16 12:21:26 [scrapy.middleware] INFO: Enabled item pipelines:
+[]
+2018-07-16 12:21:26 [scrapy.core.engine] INFO: Spider opened
+2018-07-16 12:21:26 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2018-07-16 12:21:26 [scrapy.extensions.telnet] DEBUG: Telnet console listening on 127.0.0.1:6023
+2018-07-16 12:21:27 [scrapy.downloadermiddlewares.redirect] DEBUG: Redirecting (301) to <GET https://www.nintendo.com/robots.txt> from <GET http://www.nintendo.com/robots.txt>
+2018-07-16 12:21:28 [scrapy.core.engine] DEBUG: Crawled (404) <GET https://www.nintendo.com/robots.txt> (referer: None)
+2018-07-16 12:21:28 [scrapy.downloadermiddlewares.redirect] DEBUG: Redirecting (301) to <GET https://www.nintendo.com/> from <GET http://www.nintendo.com/>
+2018-07-16 12:21:28 [scrapy.core.engine] DEBUG: Crawled (200) <GET https://www.nintendo.com/> (referer: None)
+2018-07-16 12:21:28 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.nintendo.com/>
+{'name': 'Captain Toad: Treasure Tracker ', 'releasedate': '07.13.18', 'link': 'http://www.nintendo.com//games/detail/VOEJamy4OefwooB8752-azz3ZJD3GMV1', 'image': '//media.nintendo.com/nintendo/bin/Ku68rcmSJKen7UnibJ_v3RY3RsJtfXNx/5GOXMh4vjnKWuu8fhJnquH1EABATAND7.png'}
+2018-07-16 12:21:28 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.nintendo.com/>
+{'name': 'Captain Toad: Treasure Tracker ', 'releasedate': '07.13.18', 'link': 'http://www.nintendo.com//games/detail/KCVZE6uK9Olm_8yuPpj7iLY6vCK9i7ur', 'image': '//media.nintendo.com/nintendo/bin/VEZ_l5hFMaNurdepFa1CHfzU50XxpQsK/WxKUWpV3S_EuBWzWPj4jb0qKiv8azT_T.png'}
+2018-07-16 12:21:28 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.nintendo.com/>
+{'name': 'OCTOPATH TRAVELER ', 'releasedate': '07.13.18', 'link': 'http://www.nintendo.com//games/detail/mHJ6s33Zed1xuj5BirLH3UIUmIrrr17R', 'image': '//media.nintendo.com/nintendo/bin/52yHZdow0JIT66VPGPY9xg_FUbT6hf6w/wW4hMobKdrOGg0sm8qmbjhzflpbdtf2w.png'}
+2018-07-16 12:21:28 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.nintendo.com/>
+{'name': 'Wolfenstein II: The New Colossus ', 'releasedate': '06.29.18', 'link': 'http://www.nintendo.com//games/detail/RX3RAfDdvgnjGbPBunPzZ-OHGPJViicE', 'image': '//media.nintendo.com/nintendo/bin/VNyVj_zZlMtmPvTEwkvnipCH6Yft9Of7/Mes9bLY1FaRfqUX_h5Sn4KGXP_bV9O2c.png'}
+2018-07-16 12:21:28 [scrapy.core.engine] INFO: Closing spider (finished)
+...
+2018-07-16 12:21:28 [scrapy.core.engine] INFO: Spider closed (finished)
+(docker-selenium-automation-env) 
