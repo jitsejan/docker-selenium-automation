@@ -12,18 +12,19 @@ class NintendomainSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(NintendomainSpider, self).__init__(*args, **kwargs)
-        self.driver = webdriver.Remote("http://localhost:4444/wd/hub", DesiredCapabilities.FIREFOX)
-        self.driver.get(BASE_URL)
-        self.driver.get_screenshot_as_file('screenshot.png')
+        self.driver = webdriver.Remote("http://localhost:4444/wd/hub", DesiredCapabilities.CHROME)
 
     def parse(self, response):
         for elem in response.css('section.new-releases li a'):
-            yield {
+            item = {
                'name': elem.css('div[itemprop="name"]::text').extract_first(),
                'releasedate': elem.css('.date::text').extract_first().strip(),
                'link': BASE_URL + elem.xpath('@href').extract_first(),
                'image': elem.css('img::attr(src)').extract_first()
             }
+            self.driver.get(item['link'])
+            self.driver.save_screenshot(item['name']+'.PNG')
+            yield item
 
     def closed(self, reason):
         self.driver.quit()
